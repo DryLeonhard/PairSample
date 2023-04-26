@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Board Test</title>
+</head>
+<body>
+	<h2>글 관리</h2>
+	<h4>글 상세를 통해서만 등록이 가능하도록 해둠</h4>
+	<hr>
+	<table>
+		<thead>
+			<tr><td>boardId</td><td>nickName</td><td>title</td><td>text</td></tr>
+		</thead>
+		<tbody id="tbodyBoard"></tbody>
+	</table>
+	<hr>
+	<form>
+		<table>
+			<tbody>
+				<tr><td>boardId</td><td><input type="text" name="boardId" id="inputBoardId"></td></tr>
+				<tr><td>nickName</td><td><input type="text" name="nickName" id="inputNickName" data-memberDto="" disabled></td></tr>
+				<tr><td>title</td><td><input type="text" name="title" id="inputTitle"></td></tr>
+				<tr><td>text</td><td><input type="text" name="text" id="inputText"></td></tr>
+			</tbody>
+		</table>
+	</form>
+	<div style="border: 1px; margin: auto; text-align: center">
+		<button id="btnInsert">등록</button>
+		<button id="btnUpdate">수정</button>
+		<button id="btnDelete">삭제</button>
+		<button id="btnClear">초기화</button>
+	</div>
+	
+	<script>
+		var CURRENT_ID;
+		
+		window.onload = function(){
+			
+			listBoard();
+			
+			// 이벤트 핸들러 등록
+			document.querySelector("#btnInsert").onclick = insertBoard;
+			document.querySelector("#btnUpdate").onclick = updateBoard;			
+			document.querySelector("#btnDelete").onclick = deleteBoard;
+			document.querySelector("#btnClear").onclick = clear;
+		}
+	
+		async function listBoard(){
+			// 목록
+			// get /api/boards
+			try{
+				let response = await fetch('/api/boards');
+				console.log(response)
+				let data = await response.json();
+				makeListHtml( data );
+			}catch(error){
+				console.log(error)
+			}
+		}
+		
+		function makeListHtml(list){
+			let listHtml = ``;
+			list.forEach( el => {
+				let boardId = el.boardId;
+				let memberDto = el.memberDto;
+				memberDto.password = "";
+				memberDto = JSON.stringify(memberDto);
+				let nickName = el.memberDto.nickName;
+				let title = el.title;
+				let text = el.text;
+				listHtml += `<tr style="cursor: pointer;" data-boardId=${boardId} data-memberDto=${memberDto}><td>${boardId}</td><td>${nickName}</td><td>${title}</td><td>${text}</td></tr>`;
+			});
+			
+			document.querySelector("#tbodyBoard").innerHTML = listHtml;
+			
+			makeListHtmlEventHandler();
+		}
+		
+		function makeListHtmlEventHandler(){
+			document.querySelectorAll("#tbodyBoard tr").forEach( el => {
+				el.onclick = function(){
+					let boardId = this.getAttribute("data-boardId");
+					detailBoard(boardId);
+				}
+			});
+		}
+		
+		async function detailBoard(boardId){
+			// 상세
+			// get /api/boards/123			
+			let url = '/api/boards/' + boardId;
+			
+			try{
+				let response = await fetch(url);
+				let data = await response.json();
+				makeDetailHtml( data );
+			}catch(error){
+				console.log(error)
+			}
+		}
+		
+		function makeDetailHtml(detail){
+			console.log(detail);
+			
+			CURRENT_ID = detail.boardId;
+			
+			let memberDto = detail.memberDto;
+			memberDto.password = "";
+			
+			document.querySelector("#inputBoardId").value = detail.boardId;
+			document.querySelector("#inputNickName").value = detail.memberDto.nickName;
+			document.querySelector("#inputNickName").setAttribute("data-memberDto", JSON.stringify(memberDto));
+			document.querySelector("#inputTitle").value = detail.title;
+			document.querySelector("#inputText").value = detail.text;
+			
+		}
+		
+		async function insertBoard(){
+			// fetch + rest api
+			// POST /api/boards 
+			let board = {
+				boardId : document.querySelector("#inputBoardId").value,
+				memberDto : JSON.parse(document.querySelector("#inputNickName").getAttribute("data-memberDto")),
+				title : document.querySelector("#inputTitle").value,
+				text : document.querySelector("#inputText").value
+			}
+
+			let jsonData = JSON.stringify(board);
+			let fetchOptions = {
+				method : "POST",
+				headers:{
+	                  "Content-Type":"application/json"
+	            },
+				body : jsonData
+			}
+			
+			try{
+				let response = await fetch('/api/boards', fetchOptions)
+				let data = await response.json();
+				console.log(data);
+				await listBoard();
+				clear();
+			}catch(error){
+				console.log(error)
+			}
+		}
+		// Spring MVC 와 비교해서 PUT 을 URLSearchParams 를 이용해서 보낼 수 있다.
+		async function updateBoard(){
+			// fetch + rest api
+			// PUT /api/boards 
+			let url = '/api/boards/' + CURRENT_ID;
+
+			let board = {
+				boardId : document.querySelector("#inputBoardId").value,
+				memberDto : JSON.parse(document.querySelector("#inputNickName").getAttribute("data-memberDto")),
+				title : document.querySelector("#inputTitle").value,
+				text : document.querySelector("#inputText").value
+			}
+			console.log(board);
+
+			let jsonData = JSON.stringify(board);
+			let fetchOptions = {
+				method : "PUT",
+				headers:{
+	                  "Content-Type":"application/json"
+	            },
+				body : jsonData
+			}
+			
+			try{
+				let response = await fetch(url, fetchOptions)
+				let data = await response.json();
+				console.log(data);
+				await listBoard();
+				clear();
+			}catch(error){
+				console.log(error)
+			}
+		}
+		
+		async function deleteBoard(){
+			let url = '/api/boards/' + CURRENT_ID;
+
+			let fetchOptions = {
+				method : "DELETE",
+			}
+			// fetch + rest api
+			// DELETE /api/boards
+			try{
+				let response = await fetch(url, fetchOptions)
+				// let data = await response.json();
+				// console.log(data);
+				await listBoard();
+				clear();
+			}catch(error){
+				console.log(error)
+			}
+		}
+		
+		function clear(){
+			document.querySelector("#inputBoardId").value = "";
+			document.querySelector("#inputNickName").value = "";
+			document.querySelector("#inputTitle").value = "";
+			document.querySelector("#inputText").value = "";	
+		}
+		
+	</script>	
+</body>
+</html>
