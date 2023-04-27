@@ -12,9 +12,13 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
-    @Transactional(rollbackFor = {Exception.class})
+    //@Transactional(rollbackFor = {Exception.class})
     public void createMember(MemberDto memberDto){
         memberDao.saveMemberDto(memberDto);
+    }
+
+    public void deleteMember(String id){
+        memberDao.deleteMemberById(id);
     }
 
     public MemberDto isValidMember(MemberDto memberDto) throws NotValidUserException {

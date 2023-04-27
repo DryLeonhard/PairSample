@@ -1,5 +1,6 @@
 package org.ssafy.sample.member;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -11,4 +12,7 @@ public interface MemberDao {
 
     @Select("SELECT * FROM members WHERE id = #{id}")
     MemberDto findMemberById(String id);
+
+    @Delete("DELETE FROM members WHERE id = #{id}")
+    int deleteMemberById(String id);
 }
