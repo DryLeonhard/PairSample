@@ -16,10 +16,6 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
 	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
 
-// https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
-	testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.4.7'
-
-
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -29,8 +25,12 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.projectlombok/lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.4'
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
