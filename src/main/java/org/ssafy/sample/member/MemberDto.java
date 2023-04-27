@@ -8,6 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
+@Builder(builderMethodName = "memberDtoBuilder")
 public class MemberDto {
     private String id;
     private String password;

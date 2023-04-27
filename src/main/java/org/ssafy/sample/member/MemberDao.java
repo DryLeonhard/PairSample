@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface MemberDao {
     @Insert("INSERT INTO members (id,password,nickname) VALUES(#{id}, #{password},#{nickName})")
-    void saveMemberDto(MemberDto memberDto);
+    int saveMemberDto(MemberDto memberDto);
 
     @Select("SELECT * FROM members WHERE id = #{id}")
     MemberDto findMemberById(String id);
