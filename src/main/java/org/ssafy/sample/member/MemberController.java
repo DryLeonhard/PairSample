@@ -2,17 +2,20 @@ package org.ssafy.sample.member;
 
 import javax.servlet.http.HttpSession;
 
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.ssafy.sample.exception.NotValidUserException;
 
-import java.util.Arrays;
-import java.util.Comparator;
 
 @RestController
 @RequestMapping("/api")
+@Slf4j
 public class MemberController {
+
     private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
@@ -33,7 +36,7 @@ public class MemberController {
         MemberDto findMember = memberService.isValidMember(memberDto);
 
         session.setAttribute("MemberDto", findMember);
-
+        log.debug(findMember.toString());
         return new ResponseEntity<>(findMember, HttpStatus.OK);
     }
 
