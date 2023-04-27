@@ -1,6 +1,7 @@
 package org.ssafy.sample.member;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.ssafy.sample.exception.NotValidUserException;
 
 @Service
@@ -11,7 +12,11 @@ public class MemberService {
         this.memberDao = memberDao;
     }
 
+    @Transactional
     public void createMember(MemberDto memberDto){
+        memberDao.createMember(memberDto);
+        String s = null;
+        s.length();
         memberDao.createMember(memberDto);
     }
 

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.ssafy.sample.exception.NotValidUserException;
 
-@ControllerAdvice
+/*@ControllerAdvice*/
 public class ExceptionAdvice {
 	@ExceptionHandler(NullPointerException.class)
 	public ResponseEntity<String> handleNullPointerException() {

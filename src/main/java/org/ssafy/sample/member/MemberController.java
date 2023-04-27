@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.ssafy.sample.exception.NotValidUserException;
 
 
+//@Slf4j 를 달아주면 알아서 Logger 을 만들어줌
 @RestController
 @RequestMapping("/api")
 @Slf4j
