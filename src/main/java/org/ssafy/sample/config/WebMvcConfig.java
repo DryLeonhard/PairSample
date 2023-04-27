@@ -7,9 +7,17 @@ import org.ssafy.sample.util.SampleInterceptor;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+    private final SampleInterceptor sampleInterceptor;
+
+    public WebMvcConfig(SampleInterceptor sampleInterceptor) {
+        this.sampleInterceptor = sampleInterceptor;
+    }
+
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SampleInterceptor())
+        registry.addInterceptor(sampleInterceptor)
+                .addPathPatterns("/**")
                 .excludePathPatterns("/css/**","/images/**","/js/**","/index*","/api/login*","/");
     }
 }

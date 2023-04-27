@@ -5,6 +5,10 @@ import javax.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.ssafy.sample.exception.NotValidUserException;
+
+import java.util.Arrays;
+import java.util.Comparator;
 
 @RestController
 @RequestMapping("/api")
@@ -20,20 +24,17 @@ public class MemberController {
     public ResponseEntity postMember(@RequestBody MemberDto memberDto){
         System.out.println(memberDto.toString());
         memberService.createMember(memberDto);
-        return new ResponseEntity<>(memberDto, HttpStatus.OK);
+        return new ResponseEntity<>(memberDto, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody MemberDto memberDto, HttpSession session){
+    public ResponseEntity login(@RequestBody MemberDto memberDto, HttpSession session) throws NotValidUserException {
         System.out.println(memberDto.toString());
         MemberDto findMember = memberService.isValidMember(memberDto);
-        if(findMember!=null){
-            session.setAttribute("MemberDto",findMember);
 
-            return new ResponseEntity<>(findMember,HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>("Login Failed",HttpStatus.UNAUTHORIZED);
-        }
+        session.setAttribute("MemberDto", findMember);
+
+        return new ResponseEntity<>(findMember, HttpStatus.OK);
     }
 
     @PostMapping("/logout")

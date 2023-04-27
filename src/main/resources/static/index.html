@@ -35,41 +35,25 @@
             return res;
         });
 
-        var obj;
-        if (response.status === 200) {
-            obj = await response.json();
+        if(response.status !== 200) localStorage.clear();
+
+        if (localStorage.getItem("ID")!=null) {
+            console.log("로그인되어있음");
             document.getElementById("log-in").style.display = "none";
             document.getElementById("log-out").style.display = "block";
-            document.getElementById("nick").innerHTML = obj.nickName;
+            document.getElementById("nick").innerHTML = localStorage.getItem("NICKNAME");
         }else{
+            console.log("로그아웃되어있음");
             document.getElementById("log-in").style.display = "block";
             document.getElementById("log-out").style.display = "none";
         }
     }
     async function logout(){
-        let fetchOptions ={
-            headers:{
-                "Content-type":"application/json",
-            },
-            method:"POST"
-        }
-
-
-        let input = location.pathname.substring(0, window.location.pathname.indexOf("/",2))+"/api/logout";
-
-
-        let response = await fetch(input,fetchOptions).then((res)=>{
-            return res;
-        });
-
-        if (response.status === 200) {
-            alert("로그아웃 완료")
-            parent.location.href = './';
-        } else {
-            alert("실패");
-        }
+        localStorage.clear();
+        parent.location.href = './';
     }
     async function login(){
+        localStorage.clear()
         var post = new Object();
         post.id = document.getElementById("id").value;
         post.password = document.getElementById("password").value;
@@ -100,16 +84,17 @@
             obj = await response.json();
             console.log(obj);
             alert(obj.nickName + " 님 반갑습니다");
+            localStorage.setItem("ID",obj.id);
+            localStorage.setItem("NICKNAME",obj.nickName);
             parent.location.href = './';
         } else if (response.status === 404) {
             alert("없는 아이디이거나 비밀번호가 틀렸습니다");
+            //throw new Error(response.status);
         } else if (response.status === 400) {
             alert("비밀번호가 틀렸습니다");
         } else {
             alert("실패");
         }
-
-
     }
 </script>
 </html>

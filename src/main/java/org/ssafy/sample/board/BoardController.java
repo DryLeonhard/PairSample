@@ -1,8 +1,6 @@
 package org.ssafy.sample.board;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -59,7 +57,6 @@ public class BoardController {
 
 		System.out.println(param);
 		List<BoardDto> boardDtoList = boardService.boardList(param);
-
 		return new ResponseEntity<>(boardDtoList, HttpStatus.OK);
 	}
 
